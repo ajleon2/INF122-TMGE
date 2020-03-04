@@ -4,7 +4,7 @@
 •	Design and implement an extensible Tile-Matching Game Environment (TMGE). We will adhere to the definition of a tile-matching game as used in this Wikipedia article (Links to an external site.).
 •	With a team of 8 or 9
 
-## Requirements 
+** Requirements  **
 •	The TMGE should accommodate any tile-matching game that involves a grid layout and game elements on this layout, including games such as Tetris, Klax, Bejeweled, Bust-a-Move, Puzzle Bobble, Candy Crush, Dr. Mario, Puzzle Fighter, etc.
 •	The TMGE should make it as easy as possible to create implementations of new games.
 •	The TMGE should provide a defined interface that all games built on top of the environment must follow.
@@ -18,7 +18,7 @@ o	Up to 5% extra credit for this assignment if you use Java modules that consume
 •	The TMGE should only expose parts of itself necessary to build a game, hiding the internals of the TMGE that need not be used or extended by a game directly.
 •	The TMGE  only needs to support running one game at a time.
 
-##Deliverables
+** Deliverables **
 •	The TMGE itself
 •	Two or more games from the list above that are "built on top of" the TMGE.
 •	Documentation
@@ -26,6 +26,6 @@ o	Up to 5% extra credit for this assignment if you use Java modules that consume
 •	Code and runnable jar (via a CM repository like GitHub)
 •	Peer evaluations (will be made available to you)
 
-##Reuse 
+** Reuse  ** 
 •	Cannot pick up an existing game environment implementation
 •	You can reuse other components, but first, double-check with the professor
