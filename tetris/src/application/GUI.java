@@ -46,7 +46,7 @@ public class GUI {
 		this.gameScreenHeight = gameScreenHeight;
 		
 		this.pane = new Pane();
-		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight);
+		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); // Extra width for stats sidebar
 	}
 	
 	public void display(Stage stage, GameMesh gameMesh, TetrisBlock tetrisBlock, Player player) {

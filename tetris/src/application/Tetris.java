@@ -23,14 +23,15 @@ public class Tetris extends Application {
 	final private int TILE_LENGTH = 25; // pixels
 	final private int NUM_COLS = 12; // # of tiles
 	final private int NUM_ROWS = 24; // # of tiles
-	final private int MAX_TOP_ITERATIONS = 2;
+	final private int MAX_TOP_ITERATIONS = 2; // How many game 'ticks' the Tetris block can be at the top of the 
+	                                          // screen before it's game over.
 	
 	private GameMesh gameMesh;
 	private GUI gui;
 	private Player player;
 	
-	private int topIterations;
-	private boolean isFinished;
+	private int topIterations; // Track how long the tetris block has been at the top of the screen
+	private boolean isFinished; // If True, the game is over
 	
 	public static void main(String[] args) {
 		Application.launch(args);
@@ -60,7 +61,7 @@ public class Tetris extends Application {
 					public void run() {
 						topIterations = (currentBlock.isAtTopOfScreen()) ? topIterations + 1 : 0;
 						
-						if (topIterations == MAX_TOP_ITERATIONS) {
+						if (topIterations == MAX_TOP_ITERATIONS) { // Tetris block has been at the top of the screen for too long
 							gui.displayGameOver(mainStage, gameMesh, currentBlock, player);
 							isFinished = true;
 						}
@@ -77,7 +78,7 @@ public class Tetris extends Application {
 				});
 			}
 		};
-		fall.schedule(task, 0, 300); 
+		fall.schedule(task, 0, 300); // 300 = length of a game 'tick'
 	}
 	
 	

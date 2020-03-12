@@ -111,7 +111,7 @@ public class TetrisBlock {
 	 * - 3 = rotated 90 degrees to the right from 2
 	 * - 4 = rotated 90 degrees to the right from 3
 	 */
-	public int orientation = 1;
+	private int orientation = 1;
 	
 	/**
 	 * 
