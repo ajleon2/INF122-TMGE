@@ -28,7 +28,7 @@ public class TetrisBlockGenerator {
 		
 		TetrisBlock.BlockType blockType;
 		
-		if (randInt < 0) { // J block
+		if (randInt < 15) { // J block
 			tileA.setX(screenWidth / 2 - tileLength);
 			tileB.setX(screenWidth / 2 - tileLength);
 			tileC.setX(screenWidth / 2);
@@ -40,7 +40,7 @@ public class TetrisBlockGenerator {
 			blockType = TetrisBlock.BlockType.J;
 		}
 		
-		else if (randInt < 0) { // L block
+		else if (randInt < 30) { // L block
 			tileA.setX(screenWidth / 2 + tileLength);
 			tileB.setX(screenWidth / 2 - tileLength);
 			tileC.setX(screenWidth / 2);
@@ -52,7 +52,7 @@ public class TetrisBlockGenerator {
 			blockType = TetrisBlock.BlockType.L;
 		}
 		
-		else if (randInt < 0) { // O block
+		else if (randInt < 45) { // O block
 			tileA.setX(screenWidth / 2 - tileLength);
 			tileB.setX(screenWidth / 2);
 			tileC.setX(screenWidth / 2 - tileLength);
@@ -63,7 +63,7 @@ public class TetrisBlockGenerator {
 			blockType = TetrisBlock.BlockType.O;
 		}
 		
-		else if (randInt < 0) { // S block
+		else if (randInt < 60) { // S block
 			tileA.setX(screenWidth / 2 + tileLength);
 			tileB.setX(screenWidth / 2);
 			tileC.setX(screenWidth / 2);
@@ -74,7 +74,7 @@ public class TetrisBlockGenerator {
 			blockType = TetrisBlock.BlockType.S;
 		}
 		
-		else if (randInt < 0) { // T block
+		else if (randInt < 70) { // T block
 			tileA.setX(screenWidth / 2 - tileLength);
 			tileB.setX(screenWidth / 2);
 			tileC.setX(screenWidth / 2);
@@ -84,7 +84,7 @@ public class TetrisBlockGenerator {
 			blockType = TetrisBlock.BlockType.T;
 		}
 		
-		else if (randInt < 0) { // Z block
+		else if (randInt < 90) { // Z block
 			tileA.setX(screenWidth / 2 + tileLength);
 			tileB.setX(screenWidth / 2);
 			tileC.setX(screenWidth / 2 + tileLength);
