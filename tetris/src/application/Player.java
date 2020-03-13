@@ -1,5 +1,11 @@
 package application;
 
+/**
+ * Holds the player's name, score, and number of
+ * rows cleared.
+ * @author Andrew Leon
+ *
+ */
 public class Player {
 
 	/**

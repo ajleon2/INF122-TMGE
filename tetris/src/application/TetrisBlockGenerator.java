@@ -2,10 +2,17 @@ package application;
 
 import java.util.Random;
 
-import javafx.scene.shape.Rectangle;
-
+/**
+ * Creates a random Tetris block positioned at its starting
+ * point on the game mesh.
+ * @author Andrew Leon
+ *
+ */
 public class TetrisBlockGenerator {
 	
+	/**
+	 * The random number generator.
+	 */
 	private static final Random RANDOM = new Random();
 	
 	/**

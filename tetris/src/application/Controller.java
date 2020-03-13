@@ -1,9 +1,12 @@
 package application;
 
-import java.util.ArrayList;
 
-import javafx.scene.shape.Rectangle;
-
+/**
+ * Provides static methods meant to move, flip, add, and remove a Tetris
+ * on a game mesh.
+ * @author Andrew Leon
+ *
+ */
 public class Controller {
 	/**
 	 * Attempts to move the given Tetris block one tile to the right.
@@ -56,6 +59,22 @@ public class Controller {
 	}
 	
 	/**
+	 * Attempts to flip the given Tetris block to its next orientation. If the
+	 * Tetris block will collide with a tile or the wall, it doesn't flip. Updates
+	 * the Tetris block and game mesh.
+	 * @param tetrisBlock The Tetris block.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and
+	 * aren't occupied.
+	 */
+	public static void flip(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		if (canFlip(tetrisBlock, gameMesh)) {
+			removeTetrisBlock(tetrisBlock, gameMesh);
+			tetrisBlock.flip(false);
+			addTetrisBlock(tetrisBlock, gameMesh);
+		}
+	}
+	
+	/**
 	 * Add the given Tetris block to the game mesh. Assumes there is space
 	 * on the game mesh to place said Tetris block.
 	 * @param tetrisBlock The Tetris block to add to the game mesh.
@@ -89,7 +108,6 @@ public class Controller {
 	}
 	
 	
-	
 	/**
 	 * @param tetrisBlock The tetris block.
 	 * @param gameMesh The game mesh that tracks which cells are occupied or not.
@@ -98,21 +116,22 @@ public class Controller {
 	 * @return True if the given Tetris block can move the given number & direction
 	 * of cells horizontally; False if otherwise.
 	 */
-	private static boolean canMoveHorizontal(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {		
+	private static boolean canMoveHorizontal(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {			
 		// 1st: Temporarily remove the Tetris block from the game mesh.
 		removeTetrisBlock(tetrisBlock, gameMesh);
 		
 		// 2nd: Check that the cells the Tetris block will move to are in bounds & unoccupied.
 		try {
+			tetrisBlock.shiftHorizontal(shift); // Move the block to get its new position
 			Tile tileA = tetrisBlock.getTileA();
 			Tile tileB = tetrisBlock.getTileB();
 			Tile tileC = tetrisBlock.getTileC();
 			Tile tileD = tetrisBlock.getTileD();
 			
-			return ( gameMesh.isEmpty(tileA.getRow(), tileA.getColumn() + shift) &&
-					 gameMesh.isEmpty(tileB.getRow(), tileB.getColumn() + shift) &&
-					 gameMesh.isEmpty(tileC.getRow(), tileC.getColumn() + shift) &&
-					 gameMesh.isEmpty(tileD.getRow(), tileD.getColumn() + shift));
+			return ( gameMesh.isEmpty(tileA.getRow(), tileA.getColumn()) &&
+					 gameMesh.isEmpty(tileB.getRow(), tileB.getColumn()) &&
+					 gameMesh.isEmpty(tileC.getRow(), tileC.getColumn()) &&
+					 gameMesh.isEmpty(tileD.getRow(), tileD.getColumn()));
 		}
 		
 		catch (IndexOutOfBoundsException e) {
@@ -121,6 +140,7 @@ public class Controller {
 		
 		// Re-add the Tetris block to the game mesh
 		finally {
+			tetrisBlock.shiftHorizontal(-1 * shift); // Move the block back to its original position
 			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}
@@ -133,21 +153,22 @@ public class Controller {
 	 * @return True if the given Tetris block can move the given number & direction
 	 * of cells horizontally; False if otherwise.
 	 */
-	private static boolean canMoveVertical(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {
+	private static boolean canMoveVertical(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {		
 		// 1st: Temporarily remove the Tetris block from the game mesh.
 		removeTetrisBlock(tetrisBlock, gameMesh);
 		
 		// 2nd: Check that the cells the Tetris block will move to are in bounds & unoccupied.
 		try {
+			tetrisBlock.shiftVertical(shift); // Move the block to get its new position
 			Tile tileA = tetrisBlock.getTileA();
 			Tile tileB = tetrisBlock.getTileB();
 			Tile tileC = tetrisBlock.getTileC();
 			Tile tileD = tetrisBlock.getTileD();
 			
-			return ( gameMesh.isEmpty(tileA.getRow() + shift, tileA.getColumn()) &&
-					 gameMesh.isEmpty(tileB.getRow() + shift, tileB.getColumn()) &&
-					 gameMesh.isEmpty(tileC.getRow() + shift, tileC.getColumn()) &&
-					 gameMesh.isEmpty(tileD.getRow() + shift, tileD.getColumn()));
+			return ( gameMesh.isEmpty(tileA.getRow(), tileA.getColumn()) &&
+					 gameMesh.isEmpty(tileB.getRow(), tileB.getColumn()) &&
+					 gameMesh.isEmpty(tileC.getRow(), tileC.getColumn()) &&
+					 gameMesh.isEmpty(tileD.getRow(), tileD.getColumn()));
 		}
 		
 		catch (IndexOutOfBoundsException e) {
@@ -156,6 +177,41 @@ public class Controller {
 		
 		// Re-add the Tetris block to the game mesh
 		finally {
+			tetrisBlock.shiftVertical(-1 * shift); // Move the block back to its original position
+			addTetrisBlock(tetrisBlock, gameMesh);
+		}
+	}
+	
+	/**
+	 * @param tetrisBlock The Tetris block.
+	 * @param gameMesh The game mesh that tracks which cells are occupied or not.
+	 * @return True if the Tetris block can flip to its next orientation; False if otherwise.
+	 */
+	private static boolean canFlip(TetrisBlock tetrisBlock, GameMesh gameMesh) {		
+		// 1st: Temporarily remove the Tetris block from the game mesh.
+		removeTetrisBlock(tetrisBlock, gameMesh);
+		
+		// 2nd: Check that the cells the Tetris block will move to are in bounds & unoccupied.
+		try {			
+			tetrisBlock.flip(false); // Flip block to its new position	
+			Tile tileA = tetrisBlock.getTileA();
+			Tile tileB = tetrisBlock.getTileB();
+			Tile tileC = tetrisBlock.getTileC();
+			Tile tileD = tetrisBlock.getTileD();
+			
+			return ( gameMesh.isEmpty(tileA.getRow(), tileA.getColumn()) &&
+					 gameMesh.isEmpty(tileB.getRow(), tileB.getColumn()) &&
+					 gameMesh.isEmpty(tileC.getRow(), tileC.getColumn()) &&
+					 gameMesh.isEmpty(tileD.getRow(), tileD.getColumn()));
+		}
+		
+		catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+		
+		// Re-add the Tetris block to the game mesh
+		finally {
+			tetrisBlock.flip(true); // Reset the block to its original orientation
 			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}

@@ -1,15 +1,20 @@
 package application;
 
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Manages the graphical user interface of the Tetris game.
+ * Displays the game on the left and the player's stats on the
+ * right.
+ * @author Andrew Leon
+ *
+ */
 public class GUI {
 	/**
 	 * The width of the game screen (in pixels).
@@ -25,7 +30,7 @@ public class GUI {
 	 */
 	private Pane pane;
 	/**
-	 * The Tetris scene (additional width for stats on right)
+	 * The Tetris scene
 	 */
 	private Scene scene;
 	
@@ -38,7 +43,9 @@ public class GUI {
 		this.gameScreenHeight = gameScreenHeight;
 		
 		this.pane = new Pane();
-		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); // Extra width for stats sidebar
+		
+		// Extra width for the player stats
+		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); 
 	}
 	
 	/**
@@ -89,28 +96,33 @@ public class GUI {
 	}
 	
 	/**
-	 * Puts the player's stats on the screen at the right side.
+	 * Puts the player's name and stats on the screen at the right side.
 	 * @param player Contains the player's current stats.
 	 */
 	private void setPlayerStats(Player player) {
 		Line line = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
 		
+		String playerName = String.format("Player: %s", player.getName());
+		Text playerNameText = new Text(playerName);
+		playerNameText.setX(this.gameScreenWidth + 5);
+		playerNameText.setY(50);
+		
 		String score = String.format("Score: %d", player.getScore());
 		Text scoreText = new Text(score);
 		scoreText.setX(this.gameScreenWidth + 5);
-		scoreText.setY(50);
+		scoreText.setY(100);
 		
 		String linesCleared = String.format("Lines Cleared: %d", player.getRowsCleared());
 		Text linesClearedText = new Text(linesCleared);
 		linesClearedText.setX(this.gameScreenWidth + 5);
-		linesClearedText.setY(100);
+		linesClearedText.setY(150);
 		
-		this.pane.getChildren().addAll(line, scoreText, linesClearedText);
+		this.pane.getChildren().addAll(line, playerNameText, scoreText, linesClearedText);
 	}
 	
 	/**
 	 * Set the javafx Scene object to listen for key presses.
-	 * @param tetrisBlock The tetris block that should move on key press.
+	 * @param tetrisBlock The tetris block that should move or flip on key press.
 	 * @param gameMesh The game mesh containing the tile placement information.
 	 */
 	public void setOnKeyPress(TetrisBlock tetrisBlock, GameMesh gameMesh) {
@@ -131,7 +143,7 @@ public class GUI {
 					break;
 					
 				case UP:
-					tetrisBlock.flip();
+					Controller.flip(tetrisBlock, gameMesh);
 					break;
 				}
 			}

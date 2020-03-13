@@ -1,8 +1,16 @@
 package application;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
+/**
+ * A Tetris block is comprised of 4 tiles: TileA, TileB,
+ * TileC, & TileD. Each block also has a type that denotes
+ * its shape (e.g. L type, O type, I type, etc.).
+ * *See external documentation for mappings between each
+ *  tile an their position on each Tetris block type*
+ * @author Andrew Leon
+ *
+ */
 public class TetrisBlock {
 	
 	/**
@@ -35,63 +43,11 @@ public class TetrisBlock {
 		default:
 			return Color.DARKGRAY;
 		}
-	}
-	
-	/**
-	 * Holds the cell data (row and column) of each Tetris block
-	 * tile.
-	 */
-//	public static class TetrisBlockCells {
-//		
-//		public Cell tileA;
-//		public Cell tileB;
-//		public Cell tileC;
-//		public Cell tileD;
-//		
-//		public TetrisBlockCells(Cell tileA, Cell tileB, Cell tileC, Cell tileD) {
-//			this.tileA = tileA;
-//			this.tileB = tileB;
-//			this.tileC = tileC;
-//			this.tileD = tileD;
-//		}
-//	}
-	
-	/**
-	 * Holds the cell data (row & column) of a single Tetris block
-	 * tile.
-	 *
-	 */
-//	public static class Cell {
-//		public int row;
-//		public int column;
-//		
-//		public Cell(int row, int col) {
-//			this.row = row;
-//			this.column = col;
-//		}
-//	}
-	
-	/**
-	 * Get the cell data (row and column) of each Tetris block
-	 * tile. 
-	 * 
-	 * @param tileLength The length of a tile (in pixels).
-	 * @return The cell data (row and column) of each Tetris block
-	 * tile.
-	 */
-//	public TetrisBlockCells getCells(int tileLength) {
-//		Cell tileA = new Cell((int) this.tileA.getY()/tileLength, (int) this.tileA.getX()/tileLength);
-//		Cell tileB = new Cell((int) this.tileB.getY()/tileLength, (int) this.tileB.getX()/tileLength);
-//		Cell tileC = new Cell((int) this.tileC.getY()/tileLength, (int) this.tileC.getX()/tileLength);
-//		Cell tileD = new Cell((int) this.tileD.getY()/tileLength, (int) this.tileD.getX()/tileLength);
-//		
-//		return new TetrisBlockCells(tileA, tileB, tileC, tileD);
-//	}
-	
+	}	
 	
 	
 	// The 4 tiles that make up a Tetris block.
-	// *See documentation for mappings for each
+	// *See documentation for tile mappings to each
 	//  Tetris block type*
 	private Tile tileA;
 	private Tile tileB;
@@ -104,18 +60,26 @@ public class TetrisBlock {
 	private BlockType blockType;
 	
 	/**
-	 * Ranges from 1-4 for the 4 orientations the Tetris
-	 * block can be in.
-	 * - 1 = initial position
-	 * - 2 = rotated 90 degrees to the right from 1
-	 * - 3 = rotated 90 degrees to the right from 2
-	 * - 4 = rotated 90 degrees to the right from 3
+	 * Specifies the orientation of a Tetris
+	 * block. Units are in degrees and direction is with
+	 * respect to the default orientation.
 	 */
-	private int orientation = 1;
+	public enum Orientation {
+		DEFAULT,
+		RIGHT90,
+		RIGHT180,
+		RIGHT270
+	}
 	
 	/**
-	 * Create a Tetris block. See documentation for which tiles corresponding
-	 * to which portion of each Tetris block type.
+	 * The current orientation of this Tetris block.
+	 */
+	private Orientation orientation;
+	
+	/**
+	 * Create a Tetris block. 
+	 * *See documentation for which tiles corresponding
+	 * to which portion of each Tetris block type.*
 	 * @param tileA Tile A.
 	 * @param tileB Tile B.
 	 * @param tileC Tile C
@@ -130,6 +94,7 @@ public class TetrisBlock {
 		this.tileD = tileD;
 		
 		this.blockType = blockType;
+		this.orientation = Orientation.DEFAULT;
 		
 		Color tileColor = blockTypeToColor(blockType);
 		this.tileA.setColorFill(tileColor);
@@ -140,18 +105,405 @@ public class TetrisBlock {
 	
 	/**
 	 * Change orientation of this Tetris block to the next one.
+	 * @param reverse If True, flips to the previous orientation.
+	 * If False, flips to the next orientation.
 	 */
-	public void flip() {
-		if (this.orientation != 4)
-			this.orientation++;
-		else
-			this.orientation = 1;
+	public void flip(boolean reverse) {		
+		// Flip 3 times to get to the previous orientation
+		final int NUMBER_OF_FLIPS = (reverse) ? 3 : 1;
+		
+		for (int i = 0; i < NUMBER_OF_FLIPS; i++) {
+			switch(this.blockType) {
+			case I:
+				flipI();
+				break;
+			case O:
+				break;
+			case T:
+				flipT();
+				break;
+			case J:
+				flipJ();
+				break;
+			case L:
+				flipL();
+				break;
+			case S:
+				flipS();
+				break;
+			case Z:
+				flipZ();
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	/**
-	 * @param horizontalChange The magnitude determines the number of pixels to shift this TetrisBlock.
-	 * The sign determines the direction (positive = shift right; negative = shift left). In units
-	 * of tiles (e.g. 1 = shift right 1 tile; -2 = shift left 2 tiles).
+	 * Flips a Z Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipZ() {
+		int tileANewRow, tileBNewRow, tileDNewRow;
+		int tileANewCol, tileBNewCol, tileDNewCol;
+		
+		final int PIVOT_ROW = tileC.getRow();
+		final int PIVOT_COL = tileC.getColumn();
+		
+		if (this.orientation == Orientation.DEFAULT) {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileBNewRow = PIVOT_ROW;
+			tileBNewCol = PIVOT_COL + 1;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT90) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileBNewRow = PIVOT_ROW + 1;
+			tileBNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT180) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileBNewRow = PIVOT_ROW;
+			tileBNewCol = PIVOT_COL - 1;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		
+		else {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileBNewRow = PIVOT_ROW - 1;
+			tileBNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileB.setCell(tileBNewRow, tileBNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * Flips a S Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipS() {
+		int tileANewRow, tileCNewRow, tileDNewRow;
+		int tileANewCol, tileCNewCol, tileDNewCol;
+		
+		final int PIVOT_ROW = tileB.getRow();
+		final int PIVOT_COL = tileB.getColumn();
+		
+		if (this.orientation == Orientation.DEFAULT) {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL + 1;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT90) {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileCNewRow = PIVOT_ROW + 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT180) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL - 1;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileCNewRow = PIVOT_ROW - 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileC.setCell(tileCNewRow, tileCNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * Flips a L Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipL() {
+		int tileANewRow, tileCNewRow, tileDNewRow;
+		int tileANewCol, tileCNewCol, tileDNewCol;
+		
+		final int PIVOT_ROW = tileB.getRow();
+		final int PIVOT_COL = tileB.getColumn();
+		
+		if (this.orientation == Orientation.DEFAULT) {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW + 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT90) {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL - 1;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT180) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW - 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL + 1;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileC.setCell(tileCNewRow, tileCNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * Flips a J Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipJ() {
+		int tileANewRow, tileBNewRow, tileDNewRow;
+		int tileANewCol, tileBNewCol, tileDNewCol;
+		
+		final int PIVOT_ROW = tileC.getRow();
+		final int PIVOT_COL = tileC.getColumn();
+		
+		if (this.orientation == Orientation.DEFAULT) {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileBNewRow = PIVOT_ROW - 1;
+			tileBNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT90) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileBNewRow = PIVOT_ROW;
+			tileBNewCol = PIVOT_COL + 1;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		
+		else if (this.orientation == Orientation.RIGHT180) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileBNewRow = PIVOT_ROW + 1;
+			tileBNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		
+		else {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileBNewRow = PIVOT_ROW;
+			tileBNewCol = PIVOT_COL - 1;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileB.setCell(tileBNewRow, tileBNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * Flips a T Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipT() {
+		int tileANewRow, tileCNewRow, tileDNewRow;
+		int tileANewCol, tileCNewCol, tileDNewCol;
+		
+		final int PIVOT_ROW = this.tileB.getRow();
+		final int PIVOT_COL = this.tileB.getColumn();
+
+		if (this.orientation == Orientation.DEFAULT) {
+			tileANewRow = PIVOT_ROW - 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW + 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL - 1;
+		}
+		else if (this.orientation == Orientation.RIGHT90) {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL + 1;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL - 1;
+			
+			tileDNewRow = PIVOT_ROW - 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		else if (this.orientation == Orientation.RIGHT180) {
+			tileANewRow = PIVOT_ROW + 1;
+			tileANewCol = PIVOT_COL;
+			
+			tileCNewRow = PIVOT_ROW - 1;
+			tileCNewCol = PIVOT_COL;
+			
+			tileDNewRow = PIVOT_ROW;
+			tileDNewCol = PIVOT_COL + 1;
+		}
+		else {
+			tileANewRow = PIVOT_ROW;
+			tileANewCol = PIVOT_COL - 1;
+			
+			tileCNewRow = PIVOT_ROW;
+			tileCNewCol = PIVOT_COL + 1;
+			
+			tileDNewRow = PIVOT_ROW + 1;
+			tileDNewCol = PIVOT_COL;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileC.setCell(tileCNewRow, tileCNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * Flips an I Tetris block to the next orientation. Also
+	 * changes this.orientation.
+	 */
+	private void flipI() {
+		// Currently, only cycles between 2 positions
+		int tileANewRow, tileBNewRow, tileCNewRow, tileDNewRow;
+		int tileANewCol, tileBNewCol, tileCNewCol, tileDNewCol;
+		if (this.orientation == Orientation.DEFAULT || this.orientation == Orientation.RIGHT180) {
+			tileANewRow = this.tileA.getRow() - 2;
+			tileANewCol = this.tileA.getColumn() + 2;
+			
+			tileBNewRow = this.tileB.getRow() - 1;
+			tileBNewCol = this.tileB.getColumn() + 1;
+			
+			tileCNewRow = this.tileC.getRow();
+			tileCNewCol = this.tileC.getColumn();
+			
+			tileDNewRow = this.tileD.getRow() + 1;
+			tileDNewCol = this.tileD.getColumn() - 1;
+		}
+		
+		else {
+			tileANewRow = this.tileA.getRow() + 2;
+			tileANewCol = this.tileA.getColumn() - 2;
+			
+			tileBNewRow = this.tileB.getRow() + 1;
+			tileBNewCol = this.tileB.getColumn() - 1;
+			
+			tileCNewRow = this.tileC.getRow();
+			tileCNewCol = this.tileC.getColumn();
+			
+			tileDNewRow = this.tileD.getRow() - 1;
+			tileDNewCol = this.tileD.getColumn() + 1;
+		}
+		
+		tileA.setCell(tileANewRow, tileANewCol);
+		tileB.setCell(tileBNewRow, tileBNewCol);
+		tileC.setCell(tileCNewRow, tileCNewCol);
+		tileD.setCell(tileDNewRow, tileDNewCol);
+		this.orientation = getNextOrientation();
+	}
+	
+	/**
+	 * @return This Tetris block's orientation after flipping once.
+	 */
+	private Orientation getNextOrientation() {
+		if (this.orientation == Orientation.DEFAULT)
+			return Orientation.RIGHT90;
+		else if (this.orientation == Orientation.RIGHT90)
+			return Orientation.RIGHT180;
+		else if (this.orientation == Orientation.RIGHT180)
+			return Orientation.RIGHT270;
+		else
+			return Orientation.DEFAULT;
+	}
+
+	
+	/**
+	 * @param horizontalChange The magnitude determines the number of tiles to shift this TetrisBlock.
+	 * The sign determines the direction (positive = shift right; negative = shift left).
+	 * (e.g. 1 = shift right 1 tile; -2 = shift left 2 tiles).
 	 */
 	public void shiftHorizontal(int horizontalChange) {
 		tileA.setColumn(tileA.getColumn() + horizontalChange);
@@ -161,9 +513,9 @@ public class TetrisBlock {
 	}
 	
 	/**
-	 * @param verticalChange The magnitude determines the number of pixels to shift this TetrisBlock.
-	 * The sign determines the direction (positive = shift down; negative = shift up). In units of
-	 * tiles (e.g. 1 = shift down 1 tile; -2 = shift up 2 tiles).
+	 * @param verticalChange The magnitude determines the number of tiles to shift this TetrisBlock.
+	 * The sign determines the direction (positive = shift down; negative = shift up).
+	 * (e.g. 1 = shift down 1 tile; -2 = shift up 2 tiles).
 	 */
 	public void shiftVertical(int verticalChange) {
 		tileA.setRow(tileA.getRow() + verticalChange);
