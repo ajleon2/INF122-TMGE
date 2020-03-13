@@ -41,35 +41,35 @@ public class TetrisBlock {
 	 * Holds the cell data (row and column) of each Tetris block
 	 * tile.
 	 */
-	public static class TetrisBlockCells {
-		
-		public Cell tileA;
-		public Cell tileB;
-		public Cell tileC;
-		public Cell tileD;
-		
-		public TetrisBlockCells(Cell tileA, Cell tileB, Cell tileC, Cell tileD) {
-			this.tileA = tileA;
-			this.tileB = tileB;
-			this.tileC = tileC;
-			this.tileD = tileD;
-		}
-	}
+//	public static class TetrisBlockCells {
+//		
+//		public Cell tileA;
+//		public Cell tileB;
+//		public Cell tileC;
+//		public Cell tileD;
+//		
+//		public TetrisBlockCells(Cell tileA, Cell tileB, Cell tileC, Cell tileD) {
+//			this.tileA = tileA;
+//			this.tileB = tileB;
+//			this.tileC = tileC;
+//			this.tileD = tileD;
+//		}
+//	}
 	
 	/**
 	 * Holds the cell data (row & column) of a single Tetris block
 	 * tile.
 	 *
 	 */
-	public static class Cell {
-		public int row;
-		public int column;
-		
-		public Cell(int row, int col) {
-			this.row = row;
-			this.column = col;
-		}
-	}
+//	public static class Cell {
+//		public int row;
+//		public int column;
+//		
+//		public Cell(int row, int col) {
+//			this.row = row;
+//			this.column = col;
+//		}
+//	}
 	
 	/**
 	 * Get the cell data (row and column) of each Tetris block
@@ -79,24 +79,24 @@ public class TetrisBlock {
 	 * @return The cell data (row and column) of each Tetris block
 	 * tile.
 	 */
-	public TetrisBlockCells getCells(int tileLength) {
-		Cell tileA = new Cell((int) this.tileA.getY()/tileLength, (int) this.tileA.getX()/tileLength);
-		Cell tileB = new Cell((int) this.tileB.getY()/tileLength, (int) this.tileB.getX()/tileLength);
-		Cell tileC = new Cell((int) this.tileC.getY()/tileLength, (int) this.tileC.getX()/tileLength);
-		Cell tileD = new Cell((int) this.tileD.getY()/tileLength, (int) this.tileD.getX()/tileLength);
-		
-		return new TetrisBlockCells(tileA, tileB, tileC, tileD);
-	}
+//	public TetrisBlockCells getCells(int tileLength) {
+//		Cell tileA = new Cell((int) this.tileA.getY()/tileLength, (int) this.tileA.getX()/tileLength);
+//		Cell tileB = new Cell((int) this.tileB.getY()/tileLength, (int) this.tileB.getX()/tileLength);
+//		Cell tileC = new Cell((int) this.tileC.getY()/tileLength, (int) this.tileC.getX()/tileLength);
+//		Cell tileD = new Cell((int) this.tileD.getY()/tileLength, (int) this.tileD.getX()/tileLength);
+//		
+//		return new TetrisBlockCells(tileA, tileB, tileC, tileD);
+//	}
 	
 	
 	
 	// The 4 tiles that make up a Tetris block.
 	// *See documentation for mappings for each
 	//  Tetris block type*
-	private Rectangle tileA;
-	private Rectangle tileB;
-	private Rectangle tileC;
-	private Rectangle tileD;
+	private Tile tileA;
+	private Tile tileB;
+	private Tile tileC;
+	private Tile tileD;
 	
 	/**
 	 * The block type of this Tetris block
@@ -114,14 +114,15 @@ public class TetrisBlock {
 	private int orientation = 1;
 	
 	/**
-	 * 
-	 * @param tileA The top tile.
-	 * @param tileB The right tile.
-	 * @param tileC The bottom tile.
-	 * @param tileD The left tile.
+	 * Create a Tetris block. See documentation for which tiles corresponding
+	 * to which portion of each Tetris block type.
+	 * @param tileA Tile A.
+	 * @param tileB Tile B.
+	 * @param tileC Tile C
+	 * @param tileD Tile D.
 	 * @param blockType The type of Tetris block (e.g. L shape).
 	 */
-	public TetrisBlock(Rectangle tileA, Rectangle tileB, Rectangle tileC, Rectangle tileD, 
+	public TetrisBlock(Tile tileA, Tile tileB, Tile tileC, Tile tileD, 
 			           BlockType blockType) {
 		this.tileA = tileA;
 		this.tileB = tileB;
@@ -130,11 +131,11 @@ public class TetrisBlock {
 		
 		this.blockType = blockType;
 		
-		Color blockColor = blockTypeToColor(blockType);
-		this.tileA.setFill(blockColor);
-		this.tileB.setFill(blockColor);
-		this.tileC.setFill(blockColor);
-		this.tileD.setFill(blockColor);
+		Color tileColor = blockTypeToColor(blockType);
+		this.tileA.setColorFill(tileColor);
+		this.tileB.setColorFill(tileColor);
+		this.tileC.setColorFill(tileColor);
+		this.tileD.setColorFill(tileColor);
 	}
 	
 	/**
@@ -149,48 +150,49 @@ public class TetrisBlock {
 	
 	/**
 	 * @param horizontalChange The magnitude determines the number of pixels to shift this TetrisBlock.
-	 * The sign determines the direction (positive = shift right; negative = shift left).
+	 * The sign determines the direction (positive = shift right; negative = shift left). In units
+	 * of tiles (e.g. 1 = shift right 1 tile; -2 = shift left 2 tiles).
 	 */
 	public void shiftHorizontal(int horizontalChange) {
-		tileA.setX(tileA.getX() + horizontalChange);
-		tileB.setX(tileB.getX() + horizontalChange);
-		tileC.setX(tileC.getX() + horizontalChange);
-		tileD.setX(tileD.getX() + horizontalChange);
+		tileA.setColumn(tileA.getColumn() + horizontalChange);
+		tileB.setColumn(tileB.getColumn() + horizontalChange);
+		tileC.setColumn(tileC.getColumn() + horizontalChange);
+		tileD.setColumn(tileD.getColumn() + horizontalChange);
 	}
 	
 	/**
 	 * @param verticalChange The magnitude determines the number of pixels to shift this TetrisBlock.
-	 * The sign determines the direction (positive = shift down; negative = shift up).
+	 * The sign determines the direction (positive = shift down; negative = shift up). In units of
+	 * tiles (e.g. 1 = shift down 1 tile; -2 = shift up 2 tiles).
 	 */
 	public void shiftVertical(int verticalChange) {
-		tileA.setY(tileA.getY() + verticalChange);
-		tileB.setY(tileB.getY() + verticalChange);
-		tileC.setY(tileC.getY() + verticalChange);
-		tileD.setY(tileD.getY() + verticalChange);
+		tileA.setRow(tileA.getRow() + verticalChange);
+		tileB.setRow(tileB.getRow() + verticalChange);
+		tileC.setRow(tileC.getRow() + verticalChange);
+		tileD.setRow(tileD.getRow() + verticalChange);
 	}
 	
 	
 	/**
-	 * 
 	 * @return The block type of this Tetris block.
 	 */
 	public BlockType getBlockType() {
 		return this.blockType;
 	}
 	
-	public Rectangle getTileA() {
+	public Tile getTileA() {
 		return this.tileA;
 	}
 	
-	public Rectangle getTileB() {
+	public Tile getTileB() {
 		return this.tileB;
 	}
 	
-	public Rectangle getTileC() {
+	public Tile getTileC() {
 		return this.tileC;
 	}
 	
-	public Rectangle getTileD() {
+	public Tile getTileD() {
 		return this.tileD;
 	}
 	
@@ -199,7 +201,7 @@ public class TetrisBlock {
 	 * top of the screen, False if otherwise.
 	 */
 	public boolean isAtTopOfScreen() {
-		return (tileA.getY() == 0.0 || tileB.getY() == 0.0 
-				|| tileC.getY() == 0.0 || tileD.getY() == 0.0);
+		return (tileA.getRow() == 0 || tileB.getRow() == 0 
+				|| tileC.getRow() == 0 || tileD.getRow() == 0);
 	}	
 }

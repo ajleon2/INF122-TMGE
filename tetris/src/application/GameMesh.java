@@ -14,13 +14,13 @@ public class GameMesh {
 	/**
 	 * Tracks each tile on the mesh.
 	 */
-	private Rectangle[][] mesh;
+	private Tile[][] mesh;
 	
 	public GameMesh(int numRows, int numColumns) {
 		this.numRows = numRows;
 		this.numColumns = numColumns;
 		
-		this.mesh = new Rectangle[numRows][numColumns];
+		this.mesh = new Tile[numRows][numColumns];
 		for (int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++)
 				this.mesh[row][col] = null;
@@ -59,21 +59,23 @@ public class GameMesh {
 	}
 	
 	/**
-	 * Adds the given tile to the given (row, column) cell if
-	 * and only if said cell is empty.
+	 * Adds the given tile to the game mesh if the tile's (row, column)
+	 * cell is within the mesh's bounds and if the space is currently
+	 * unoccupied.
 	 * 
-	 * @param rectangle The tile.
-	 * @param row The cell row number.
-	 * @param column The cell column number.
-	 * @throws IndexOutOfBoundsException Thrown if the given (row, column) cell is out
+	 * @param tile The tile.
+	 * @throws IndexOutOfBoundsException Thrown if the tile's (row, column) cell is out
 	 * of this game mesh's bounds.
 	 */
-	public void addTile(Rectangle tile, int row, int column) throws IndexOutOfBoundsException {
-		if (!isInBounds(row, column))
+	public void addTile(Tile tile) throws IndexOutOfBoundsException {
+		final int ROW = tile.getRow();
+		final int COLUMN = tile.getColumn();
+		
+		if (!isInBounds(ROW, COLUMN))
 			throw new IndexOutOfBoundsException("Given row & column are not on the game mesh.");
 		
-		if (mesh[row][column] == null)
-			mesh[row][column] = tile;
+		if (mesh[ROW][COLUMN] == null)
+			mesh[ROW][COLUMN] = tile;
 	}
 	
 	/**

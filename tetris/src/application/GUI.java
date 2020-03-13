@@ -80,7 +80,6 @@ public class GUI {
 	}
 	
 	private void setPlayerStats(Player player) {
-		
 		Line line = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
 		
 		String score = String.format("Score: %d", player.getScore());
@@ -97,27 +96,27 @@ public class GUI {
 	}
 	
 	private void setTetrisBlock(TetrisBlock tetrisBlock) {
-		this.pane.getChildren().addAll(tetrisBlock.getTileA(),
-				                       tetrisBlock.getTileB(),
-				                       tetrisBlock.getTileC(),
-				                       tetrisBlock.getTileD());
+		this.pane.getChildren().addAll(tetrisBlock.getTileA().getRectangle(),
+				                       tetrisBlock.getTileB().getRectangle(),
+				                       tetrisBlock.getTileC().getRectangle(),
+				                       tetrisBlock.getTileD().getRectangle());
 	}
 	
-	public void setOnKeyPress(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
+	public void setOnKeyPress(TetrisBlock tetrisBlock, GameMesh gameMesh) {
 		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
 			
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case RIGHT:
-					Controller.moveRight(tetrisBlock, gameMesh, tileLength);
+					Controller.moveRight(tetrisBlock, gameMesh);
 					break;
 					
 				case DOWN:
-					Controller.moveDown(tetrisBlock, gameMesh, tileLength);
+					Controller.moveDown(tetrisBlock, gameMesh);
 					break;
 					
 				case LEFT:
-					Controller.moveLeft(tetrisBlock, gameMesh, tileLength);
+					Controller.moveLeft(tetrisBlock, gameMesh);
 					break;
 					
 				case UP:

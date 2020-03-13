@@ -6,75 +6,86 @@ import javafx.scene.shape.Rectangle;
 
 public class Controller {
 	/**
-	 * Attempts to move the given Tetris block one space to the right.
+	 * Attempts to move the given Tetris block one tile to the right.
 	 * If the Tetris block can't move there, it doesn't.
-	 * @param tetrisBlock The tetris block.
-	 * @param gameMesh The game mesh that keeps track of which tiles are &
+	 * @param tetrisBlock The Tetris block.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and
 	 * aren't occupied.
-	 * @param tileLength The length of a tile (in pixels).
 	 */
-	public static void moveRight(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
-		int SHIFT = 1;
-		if (canMoveHorizontal(tetrisBlock, gameMesh, tileLength, SHIFT)) {
-			removeTetrisBlock(tetrisBlock, gameMesh, tileLength);
-			tetrisBlock.shiftHorizontal(tileLength);
-			addTetrisBlock(tetrisBlock, gameMesh, tileLength);
+	public static void moveRight(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		int SHIFT_AMOUNT = 1; // 1 tile right
+		if (canMoveHorizontal(tetrisBlock, gameMesh, SHIFT_AMOUNT)) {
+			removeTetrisBlock(tetrisBlock, gameMesh);
+			tetrisBlock.shiftHorizontal(SHIFT_AMOUNT);
+			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}
 	
 	/**
-	 * Attempts to move the given Tetris block one space to the left.
+	 * Attempts to move the given Tetris block one tile to the left.
 	 * If the Tetris block can't move there, it doesn't. Updates the Tetris
 	 * block & game mesh.
-	 * @param tetrisBlock The tetris block.
-	 * @param gameMesh The game mesh that keeps track of which tiles are &
+	 * @param tetrisBlock The Tetris block.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and
 	 * aren't occupied.
-	 * @param tileLength The length of a tile (in pixels).
 	 */
-	public static void moveLeft(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
-		int SHIFT = -1;
-		if (canMoveHorizontal(tetrisBlock, gameMesh, tileLength, SHIFT)) {
-			removeTetrisBlock(tetrisBlock, gameMesh, tileLength);
-			tetrisBlock.shiftHorizontal(-1 * tileLength);
-			addTetrisBlock(tetrisBlock, gameMesh, tileLength);
+	public static void moveLeft(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		int SHIFT_AMOUNT = -1; // 1 tile left
+		if (canMoveHorizontal(tetrisBlock, gameMesh, SHIFT_AMOUNT)) {
+			removeTetrisBlock(tetrisBlock, gameMesh);
+			tetrisBlock.shiftHorizontal(SHIFT_AMOUNT);
+			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}
 	
-	public static void moveDown(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
-		int SHIFT = 1;
-		if (canMoveVertical(tetrisBlock, gameMesh, tileLength, SHIFT)) {
-			removeTetrisBlock(tetrisBlock, gameMesh, tileLength);
-			tetrisBlock.shiftVertical(tileLength);
-			addTetrisBlock(tetrisBlock, gameMesh, tileLength);
+	/**
+	 * Attempts to move the given Tetris block one tile down.
+	 * If the Tetris block can't move there, it doesn't. Updates the Tetris
+	 * block & game mesh.
+	 * @param tetrisBlock The Tetris block.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and
+	 * aren't occupied.
+	 */
+	public static void moveDown(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		int SHIFT_AMOUNT = 1; // 1 tile down
+		if (canMoveVertical(tetrisBlock, gameMesh, SHIFT_AMOUNT)) {
+			removeTetrisBlock(tetrisBlock, gameMesh);
+			tetrisBlock.shiftVertical(SHIFT_AMOUNT);
+			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}
 	
-	
-	private static void addTetrisBlock(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
-		TetrisBlock.TetrisBlockCells cells = tetrisBlock.getCells(tileLength);
-		TetrisBlock.Cell tileA = cells.tileA;
-		TetrisBlock.Cell tileB = cells.tileB;
-		TetrisBlock.Cell tileC = cells.tileC;
-		TetrisBlock.Cell tileD = cells.tileD;
-		
-		gameMesh.addTile(tetrisBlock.getTileA(), tileA.row, tileA.column);
-		gameMesh.addTile(tetrisBlock.getTileB(), tileB.row, tileB.column);
-		gameMesh.addTile(tetrisBlock.getTileC(), tileC.row, tileC.column);
-		gameMesh.addTile(tetrisBlock.getTileD(), tileD.row, tileD.column);
+	/**
+	 * Add the given Tetris block to the game mesh. Assumes there is space
+	 * on the game mesh to place said Tetris block.
+	 * @param tetrisBlock The Tetris block to add to the game mesh.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and aren't
+	 * occupied.
+	 */
+	public static void addTetrisBlock(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		gameMesh.addTile(tetrisBlock.getTileA());
+		gameMesh.addTile(tetrisBlock.getTileB());
+		gameMesh.addTile(tetrisBlock.getTileC());
+		gameMesh.addTile(tetrisBlock.getTileD());
 	}
 	
-	
-	private static void removeTetrisBlock(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength) {
-		TetrisBlock.TetrisBlockCells cells = tetrisBlock.getCells(tileLength);
-		TetrisBlock.Cell tileA = cells.tileA;
-		TetrisBlock.Cell tileB = cells.tileB;
-		TetrisBlock.Cell tileC = cells.tileC;
-		TetrisBlock.Cell tileD = cells.tileD;
+	/**
+	 * Remove the given Tetris block from the game mesh. Assumes the Tetris block is
+	 * on the game mesh.
+	 * @param tetrisBlock The Tetris block to remove from the game mesh.
+	 * @param gameMesh The game mesh that keeps track of which tiles are and aren't
+	 * occupied.
+	 */
+	public static void removeTetrisBlock(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+		Tile tileA = tetrisBlock.getTileA();
+		Tile tileB = tetrisBlock.getTileB();
+		Tile tileC = tetrisBlock.getTileC();
+		Tile tileD = tetrisBlock.getTileD();
 		
-		gameMesh.removeTile(tileA.row, tileA.column);
-		gameMesh.removeTile(tileB.row, tileB.column);
-		gameMesh.removeTile(tileC.row, tileC.column);
-		gameMesh.removeTile(tileD.row, tileD.column);
+		gameMesh.removeTile(tileA.getRow(), tileA.getColumn());
+		gameMesh.removeTile(tileB.getRow(), tileB.getColumn());
+		gameMesh.removeTile(tileC.getRow(), tileC.getColumn());
+		gameMesh.removeTile(tileD.getRow(), tileD.getColumn());
 	}
 	
 	
@@ -82,67 +93,70 @@ public class Controller {
 	/**
 	 * @param tetrisBlock The tetris block.
 	 * @param gameMesh The game mesh that tracks which cells are occupied or not.
-	 * @param tileLength The length of a tile (in pixels).
-	 * @param shift The magnitude denotes the number of cells the Tetris block moves.
+	 * @param shift The magnitude denotes the number of tiles the Tetris block moves.
 	 * The sign denotes the direction (negative = left; positive = right). 
 	 * @return True if the given Tetris block can move the given number & direction
 	 * of cells horizontally; False if otherwise.
 	 */
-	private static boolean canMoveHorizontal(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength, int shift) {
+	private static boolean canMoveHorizontal(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {		
+		// 1st: Temporarily remove the Tetris block from the game mesh.
+		removeTetrisBlock(tetrisBlock, gameMesh);
 		
-		// 1st: Get the cells that the Tetris block CURRENTLY occupies.
-		TetrisBlock.TetrisBlockCells cells = tetrisBlock.getCells(tileLength);
-		TetrisBlock.Cell tileA = cells.tileA;
-		TetrisBlock.Cell tileB = cells.tileB;
-		TetrisBlock.Cell tileC = cells.tileC;
-		TetrisBlock.Cell tileD = cells.tileD;
-		
-		// 2nd: Check that the cells the Tetris block WILL occupy are in bounds & unoccupied.
-		
-		// Temporarily remove the Tetris block
-		removeTetrisBlock(tetrisBlock, gameMesh, tileLength);
+		// 2nd: Check that the cells the Tetris block will move to are in bounds & unoccupied.
 		try {
-			return ( gameMesh.isEmpty(tileA.row, tileA.column + shift) &&
-					 gameMesh.isEmpty(tileB.row, tileB.column + shift) &&
-					 gameMesh.isEmpty(tileC.row, tileC.column + shift) &&
-					 gameMesh.isEmpty(tileD.row, tileD.column + shift));
+			Tile tileA = tetrisBlock.getTileA();
+			Tile tileB = tetrisBlock.getTileB();
+			Tile tileC = tetrisBlock.getTileC();
+			Tile tileD = tetrisBlock.getTileD();
+			
+			return ( gameMesh.isEmpty(tileA.getRow(), tileA.getColumn() + shift) &&
+					 gameMesh.isEmpty(tileB.getRow(), tileB.getColumn() + shift) &&
+					 gameMesh.isEmpty(tileC.getRow(), tileC.getColumn() + shift) &&
+					 gameMesh.isEmpty(tileD.getRow(), tileD.getColumn() + shift));
 		}
 		
 		catch (IndexOutOfBoundsException e) {
 			return false;
 		}
 		
+		// Re-add the Tetris block to the game mesh
 		finally {
-			addTetrisBlock(tetrisBlock, gameMesh, tileLength);
+			addTetrisBlock(tetrisBlock, gameMesh);
 		}
-		
 	}
 	
-	private static boolean canMoveVertical(TetrisBlock tetrisBlock, GameMesh gameMesh, int tileLength, int shift) {
-		// 1st: Get the cells that the Tetris block CURRENTLY occupies.
-		TetrisBlock.TetrisBlockCells cells = tetrisBlock.getCells(tileLength);
-		TetrisBlock.Cell tileA = cells.tileA;
-		TetrisBlock.Cell tileB = cells.tileB;
-		TetrisBlock.Cell tileC = cells.tileC;
-		TetrisBlock.Cell tileD = cells.tileD;
+	/**
+	 * @param tetrisBlock The tetris block.
+	 * @param gameMesh The game mesh that tracks which cells are occupied or not.
+	 * @param shift The magnitude denotes the number of tiles the Tetris block moves.
+	 * The sign denotes the direction (negative = up; positive = down). 
+	 * @return True if the given Tetris block can move the given number & direction
+	 * of cells horizontally; False if otherwise.
+	 */
+	private static boolean canMoveVertical(TetrisBlock tetrisBlock, GameMesh gameMesh, int shift) {
+		// 1st: Temporarily remove the Tetris block from the game mesh.
+		removeTetrisBlock(tetrisBlock, gameMesh);
 		
-		// 2nd: Check that the cells the Tetris block WILL occupy are in bounds & unoccupied.
-		
-		// Temporarily remove the Tetris block
-		removeTetrisBlock(tetrisBlock, gameMesh, tileLength);
-		try {			
-			return ( gameMesh.isEmpty(tileA.row + shift, tileA.column) &&
-					 gameMesh.isEmpty(tileB.row + shift, tileB.column) &&
-					 gameMesh.isEmpty(tileC.row + shift, tileC.column) &&
-					 gameMesh.isEmpty(tileD.row + shift, tileD.column));
+		// 2nd: Check that the cells the Tetris block will move to are in bounds & unoccupied.
+		try {
+			Tile tileA = tetrisBlock.getTileA();
+			Tile tileB = tetrisBlock.getTileB();
+			Tile tileC = tetrisBlock.getTileC();
+			Tile tileD = tetrisBlock.getTileD();
+			
+			return ( gameMesh.isEmpty(tileA.getRow() + shift, tileA.getColumn()) &&
+					 gameMesh.isEmpty(tileB.getRow() + shift, tileB.getColumn()) &&
+					 gameMesh.isEmpty(tileC.getRow() + shift, tileC.getColumn()) &&
+					 gameMesh.isEmpty(tileD.getRow() + shift, tileD.getColumn()));
 		}
 		
 		catch (IndexOutOfBoundsException e) {
 			return false;
 		}
 		
+		// Re-add the Tetris block to the game mesh
 		finally {
-			addTetrisBlock(tetrisBlock, gameMesh, tileLength);
+			addTetrisBlock(tetrisBlock, gameMesh);
 		}
 	}
 }

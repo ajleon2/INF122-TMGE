@@ -48,11 +48,12 @@ public class Tetris extends Application {
 	@Override
 	public void start(Stage mainStage) throws Exception {
 		
-		TetrisBlock currentBlock = TetrisBlockGenerator.createTetrisBlock(TILE_LENGTH, getScreenPixelWidth());
-		TetrisBlock nextBlock = TetrisBlockGenerator.createTetrisBlock(TILE_LENGTH, getScreenPixelWidth());
+		TetrisBlock currentBlock = TetrisBlockGenerator.createTetrisBlock(TILE_LENGTH, NUM_COLS);
+		//TetrisBlock nextBlock = TetrisBlockGenerator.createTetrisBlock(TILE_LENGTH, NUM_COLS);
 		
+		Controller.addTetrisBlock(currentBlock, gameMesh);
 		gui.display(mainStage, gameMesh, currentBlock, this.player);		
-		gui.setOnKeyPress(currentBlock, gameMesh, TILE_LENGTH);
+		gui.setOnKeyPress(currentBlock, gameMesh);
 		
 		Timer fall = new Timer(); // When the Tetris block should fall down
 		TimerTask task = new TimerTask() {
@@ -71,7 +72,7 @@ public class Tetris extends Application {
 						}
 						
 						if (!isFinished) {
-							Controller.moveDown(currentBlock, gameMesh, TILE_LENGTH);
+							Controller.moveDown(currentBlock, gameMesh);
 							gui.display(mainStage, gameMesh, currentBlock, player);
 						}
 					}

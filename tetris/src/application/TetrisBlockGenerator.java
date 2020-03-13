@@ -12,94 +12,77 @@ public class TetrisBlockGenerator {
 	 * Create a new TetrisBlock (made of 4 rectangles).
 	 * 
 	 * @param tileLength Length of a tile (in pixels).
-	 * @param screenWidth Width of the game portion of the screen (in pixels).
+	 * @param screenWidth Width of the game portion of the screen (in # of tiles).
 	 * @return A new TetrisBlock placed at the top of the game screen and halfway
 	 * along the game screen's width.
 	 */
 	public static TetrisBlock createTetrisBlock(int tileLength, int screenWidth) {
 		
-		int randInt = RANDOM.nextInt(100);
+		final int CENTER_COLUMN = (int)screenWidth/2;
 		
-		// Create tiles w/ identical dimensions
-		Rectangle tileA = new Rectangle(tileLength, tileLength);
-		Rectangle tileB = new Rectangle(tileLength, tileLength );
-		Rectangle tileC = new Rectangle(tileLength, tileLength);
-		Rectangle tileD = new Rectangle(tileLength, tileLength);
+		Tile tileA;
+		Tile tileB;
+		Tile tileC;
+		Tile tileD;
 		
 		TetrisBlock.BlockType blockType;
 		
+		
+		int randInt = RANDOM.nextInt(100);
+		
 		if (randInt < 15) { // J block
-			tileA.setX(screenWidth / 2 - tileLength);
-			tileB.setX(screenWidth / 2 - tileLength);
-			tileC.setX(screenWidth / 2);
-			tileD.setX(screenWidth / 2 + tileLength);
-			
-			tileB.setY(tileLength);
-			tileC.setY(tileLength);
-			tileD.setY(tileLength);
+			tileA = new Tile(tileLength, 0, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 1, CENTER_COLUMN - 1);
+			tileC = new Tile(tileLength, 1, CENTER_COLUMN);
+			tileD = new Tile(tileLength, 1, CENTER_COLUMN + 1);
 			blockType = TetrisBlock.BlockType.J;
 		}
 		
 		else if (randInt < 30) { // L block
-			tileA.setX(screenWidth / 2 + tileLength);
-			tileB.setX(screenWidth / 2 - tileLength);
-			tileC.setX(screenWidth / 2);
-			
-			tileB.setY(tileLength);
-			tileC.setY(tileLength);
-			tileD.setX(screenWidth / 2 + tileLength);
-			tileD.setY(tileLength);
+			tileA = new Tile(tileLength, 1, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 1, CENTER_COLUMN);
+			tileC = new Tile(tileLength, 1, CENTER_COLUMN + 1);
+			tileD = new Tile(tileLength, 0, CENTER_COLUMN + 1);
 			blockType = TetrisBlock.BlockType.L;
 		}
 		
 		else if (randInt < 45) { // O block
-			tileA.setX(screenWidth / 2 - tileLength);
-			tileB.setX(screenWidth / 2);
-			tileC.setX(screenWidth / 2 - tileLength);
-			tileD.setX(screenWidth / 2);
-			
-			tileC.setY(tileLength);
-			tileD.setY(tileLength);
+			tileA = new Tile(tileLength, 0, CENTER_COLUMN);
+			tileB = new Tile(tileLength, 0, CENTER_COLUMN + 1);
+			tileC = new Tile(tileLength, 1, CENTER_COLUMN);
+			tileD = new Tile(tileLength, 1, CENTER_COLUMN + 1);
 			blockType = TetrisBlock.BlockType.O;
 		}
 		
 		else if (randInt < 60) { // S block
-			tileA.setX(screenWidth / 2 + tileLength);
-			tileB.setX(screenWidth / 2);
-			tileC.setX(screenWidth / 2);
-			tileD.setX(screenWidth / 2 - tileLength);
-			
-			tileC.setY(tileLength);
-			tileD.setY(tileLength);
+			tileA = new Tile(tileLength, 1, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 1, CENTER_COLUMN);
+			tileC = new Tile(tileLength, 0, CENTER_COLUMN);
+			tileD = new Tile(tileLength, 0, CENTER_COLUMN + 1);
 			blockType = TetrisBlock.BlockType.S;
 		}
 		
-		else if (randInt < 70) { // T block
-			tileA.setX(screenWidth / 2 - tileLength);
-			tileB.setX(screenWidth / 2);
-			tileC.setX(screenWidth / 2);
-			tileD.setX(screenWidth / 2 + tileLength);
-			
-			tileC.setY(tileLength);
+		else if (randInt < 75) { // T block
+			tileA = new Tile(tileLength, 0, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 0, CENTER_COLUMN);
+			tileC = new Tile(tileLength, 0, CENTER_COLUMN + 1);
+			tileD = new Tile(tileLength, 1, CENTER_COLUMN);
 			blockType = TetrisBlock.BlockType.T;
 		}
 		
 		else if (randInt < 90) { // Z block
-			tileA.setX(screenWidth / 2 + tileLength);
-			tileB.setX(screenWidth / 2);
-			tileC.setX(screenWidth / 2 + tileLength);
-			tileD.setX(screenWidth / 2 + tileLength + tileLength);
-			
-			tileC.setY(tileLength);
-			tileD.setY(tileLength);
+			tileA = new Tile(tileLength, 0, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 0, CENTER_COLUMN);
+			tileC = new Tile(tileLength, 1, CENTER_COLUMN);
+			tileD = new Tile(tileLength, 1, CENTER_COLUMN + 1);
 			blockType = TetrisBlock.BlockType.Z;
 		}
 		
 		else {
-			tileA.setX(screenWidth / 2 - tileLength - tileLength);
-			tileB.setX(screenWidth / 2 - tileLength);
-			tileC.setX(screenWidth / 2);
-			tileD.setX(screenWidth / 2 + tileLength);
+			tileA = new Tile(tileLength, 0, CENTER_COLUMN - 1);
+			tileB = new Tile(tileLength, 0, CENTER_COLUMN);
+			tileC = new Tile(tileLength, 0, CENTER_COLUMN + 1);
+			tileD = new Tile(tileLength, 0, CENTER_COLUMN + 2);
 			blockType = TetrisBlock.BlockType.I;
 		}
 		
