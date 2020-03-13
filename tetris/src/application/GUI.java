@@ -11,12 +11,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GUI {
-	
-	/**
-	 * Length of a tile (in pixels).
-	 */
-	private int tileLength;
-
 	/**
 	 * The width of the game screen (in pixels).
 	 */
@@ -36,12 +30,10 @@ public class GUI {
 	private Scene scene;
 	
 	/**
-	 * @param tileLength Length of a tile (in pixels). Tiles are assumed to be squares.
 	 * @param gameScreenWidth Width of the game screen (in pixels).
 	 * @param gameScreenHeight Height of the game screen (in pixels).
 	 */
-	public GUI(int tileLength, int gameScreenWidth, int gameScreenHeight) {
-		this.tileLength = tileLength;
+	public GUI(int gameScreenWidth, int gameScreenHeight) {
 		this.gameScreenWidth = gameScreenWidth;
 		this.gameScreenHeight = gameScreenHeight;
 		
@@ -49,36 +41,57 @@ public class GUI {
 		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); // Extra width for stats sidebar
 	}
 	
-	public void display(Stage stage, GameMesh gameMesh, TetrisBlock tetrisBlock, Player player) {
+	/**
+	 * Displays the tiles in the game mesh and the player stats to the screen.
+	 * If gameOver is True, will also display a game over message. If false, will not.
+	 * @param stage The javafx stage to display to.
+	 * @param gameMesh The game mesh which represents all tiles on the game screen.
+	 * @param player Contains the player's name and stats.
+	 * @param gameOver If True, displays a game over message. If false, doesn't.
+	 */
+	public void display(Stage stage, GameMesh gameMesh, Player player, Boolean gameOver) {
 		this.pane.getChildren().clear();
 		
 		setPlayerStats(player);
-		setTetrisBlock(tetrisBlock);
+		setGameMesh(gameMesh);
+		
+		if (gameOver)
+			setGameOver();
 		
 		stage.setScene(this.scene);
 		stage.setTitle("T E T R I S");
 		stage.show();
 	}
 	
-	public void displayGameOver(Stage stage, GameMesh gameMesh, TetrisBlock tetrisBlock, Player player) {
-		this.pane.getChildren().clear();
-		
-		setPlayerStats(player);
-		setTetrisBlock(tetrisBlock);
-		
-		stage.setScene(this.scene);
-		stage.setTitle("T E T R I S");
-		
-		
+	/**
+	 * Put a "GAME OVER" overlay to the screen.
+	 */
+	private void setGameOver() {
 		Text gameOverText = new Text("GAME OVER");
 		gameOverText.setStyle("-fx-font: 70 arial;");
 		gameOverText.setY(250);
 		gameOverText.setX(10);
 		this.pane.getChildren().add(gameOverText);
-		
-		stage.show();
 	}
 	
+	/**
+	 * Puts the game mesh to the screen.
+	 * @param gameMesh The game mesh, contains information about where
+	 * each tile is placed on the screen.
+	 */
+	private void setGameMesh(GameMesh gameMesh) {
+		for (int r = 0; r < gameMesh.getNumRows(); r++) {
+			for (int c = 0; c < gameMesh.getNumColumns(); c++) {
+				if (!gameMesh.isEmpty(r, c))
+					this.pane.getChildren().add(gameMesh.getTile(r, c).getRectangle());
+			}
+		}
+	}
+	
+	/**
+	 * Puts the player's stats on the screen at the right side.
+	 * @param player Contains the player's current stats.
+	 */
 	private void setPlayerStats(Player player) {
 		Line line = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
 		
@@ -95,13 +108,11 @@ public class GUI {
 		this.pane.getChildren().addAll(line, scoreText, linesClearedText);
 	}
 	
-	private void setTetrisBlock(TetrisBlock tetrisBlock) {
-		this.pane.getChildren().addAll(tetrisBlock.getTileA().getRectangle(),
-				                       tetrisBlock.getTileB().getRectangle(),
-				                       tetrisBlock.getTileC().getRectangle(),
-				                       tetrisBlock.getTileD().getRectangle());
-	}
-	
+	/**
+	 * Set the javafx Scene object to listen for key presses.
+	 * @param tetrisBlock The tetris block that should move on key press.
+	 * @param gameMesh The game mesh containing the tile placement information.
+	 */
 	public void setOnKeyPress(TetrisBlock tetrisBlock, GameMesh gameMesh) {
 		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
 			

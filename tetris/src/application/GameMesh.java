@@ -27,6 +27,12 @@ public class GameMesh {
 		}
 	}
 	
+	public Tile getTile(int row, int column) throws IndexOutOfBoundsException {
+		if (!isInBounds(row, column))
+			throw new IndexOutOfBoundsException("Given row & column are not on the game mesh.");
+		return mesh[row][column];
+	}
+	
 	/**
 	 * @param row The row.
 	 * @param column The column.

@@ -52,4 +52,11 @@ public class Player {
 	public int getRowsCleared() {
 		return this.rowsCleared;
 	}
+	
+	/**
+	 * @return This player's name.
+	 */
+	public String getName() {
+		return this.name;
+	}
 }

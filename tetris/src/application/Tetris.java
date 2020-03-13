@@ -31,7 +31,7 @@ public class Tetris extends Application {
 	private Player player;
 	
 	private int topIterations; // Track how long the tetris block has been at the top of the screen
-	private boolean isFinished; // If True, the game is over
+	private boolean gameOver; // If True, the game is over
 	
 	public static void main(String[] args) {
 		Application.launch(args);
@@ -39,10 +39,10 @@ public class Tetris extends Application {
 	
 	public Tetris() {
 		this.gameMesh = new GameMesh(this.NUM_ROWS, this.NUM_COLS);
-		this.gui = new GUI(TILE_LENGTH, this.NUM_COLS*TILE_LENGTH, this.NUM_ROWS*TILE_LENGTH);
+		this.gui = new GUI(this.NUM_COLS*TILE_LENGTH, this.NUM_ROWS*TILE_LENGTH);
 		this.player = new Player("Player 1");
 		this.topIterations = 0;
-		this.isFinished = false;
+		this.gameOver = false;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class Tetris extends Application {
 		//TetrisBlock nextBlock = TetrisBlockGenerator.createTetrisBlock(TILE_LENGTH, NUM_COLS);
 		
 		Controller.addTetrisBlock(currentBlock, gameMesh);
-		gui.display(mainStage, gameMesh, currentBlock, this.player);		
+		gui.display(mainStage, gameMesh, this.player, this.gameOver);		
 		gui.setOnKeyPress(currentBlock, gameMesh);
 		
 		Timer fall = new Timer(); // When the Tetris block should fall down
@@ -63,17 +63,18 @@ public class Tetris extends Application {
 						topIterations = (currentBlock.isAtTopOfScreen()) ? topIterations + 1 : 0;
 						
 						if (topIterations == MAX_TOP_ITERATIONS) { // Tetris block has been at the top of the screen for too long
-							gui.displayGameOver(mainStage, gameMesh, currentBlock, player);
-							isFinished = true;
+							gameOver = true;
+							gui.display(mainStage, gameMesh, player, gameOver);	
+							
 						}
 						
 						if (topIterations == MAX_TOP_ITERATIONS + 15) {
 							System.exit(0);
 						}
 						
-						if (!isFinished) {
+						if (!gameOver) {
 							Controller.moveDown(currentBlock, gameMesh);
-							gui.display(mainStage, gameMesh, currentBlock, player);
+							gui.display(mainStage, gameMesh, player, gameOver);	
 						}
 					}
 				});
