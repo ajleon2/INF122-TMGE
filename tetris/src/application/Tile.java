@@ -3,6 +3,7 @@ package application;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+
 /**
  * A Tile is the smallest unit in a tile matching game.
  * Tetris blocks are comprised of tiles. Tiles manage
@@ -12,6 +13,18 @@ import javafx.scene.shape.Rectangle;
  *
  */
 public class Tile {
+	
+	/**
+	 * Some tile matching games have different types of tiles w/
+	 * different properties. B/c Tetris isn't such a game,
+	 * there is only 1 tile type.
+	 * @author Andrew Leon
+	 *
+	 */
+	public enum TileType {
+		TETRIS
+	}
+	
 	/**
 	 * A javafx rectangle represents this Tile.
 	 */
@@ -28,6 +41,11 @@ public class Tile {
 	 * The length of this tile (in pixels). All tiles are squares.
 	 */
 	private int tileLength;
+	/**
+	 * A formality. Some tile matching games use different tiles
+	 * with different properties; this member determinse said tile type.
+	 */
+	private TileType tileType;
 	
 	/**
 	 * Create a new Tile object with the provided color. Tiles are squares. 
@@ -48,6 +66,8 @@ public class Tile {
 		this.tile.setX(column*tileLength);
 		this.tile.setY(row*tileLength);
 		this.tile.setFill(color);
+		
+		this.tileType = TileType.TETRIS;
 	}
 	
 	/**
@@ -68,6 +88,8 @@ public class Tile {
 		this.tile.setX(column*tileLength);
 		this.tile.setY(row*tileLength);
 		this.tile.setFill(Color.DARKGRAY);
+		
+		this.tileType = TileType.TETRIS;
 	}
 	
 	/**

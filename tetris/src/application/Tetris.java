@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 /**
  * The entry point for this Tetris application.
  * @author Andrew Leon
- *
  */
 public class Tetris extends Application {
 	/**
@@ -29,12 +28,12 @@ public class Tetris extends Application {
 	 * How many game 'ticks' the Tetris block can be at the top of
 	 * the screen before it's game over.
 	 */
-	final private int MAX_TOP_ITERATIONS = 2; 
+	final private int MAX_TOP_ITERATIONS = 5; 
 	/**
 	 * How many game 'ticks' the Tetris block can be stationary
 	 * until a new one is spawned.
 	 */
-	final private int MAX_STATIONARY_ITERATIONS = 2;
+	final private int MAX_STATIONARY_ITERATIONS = 3;
 	
 	/**
 	 * Manages the positions of all tiles.
@@ -55,16 +54,6 @@ public class Tetris extends Application {
 	 * game over.
 	 */
 	private int topIterations;
-	/**
-	 * The current Tetris block's row. Needed for reference to know
-	 * if the block is stationary.
-	 */
-	private int tetrisBlockRow;
-	/**
-	 * The current Tetris block's column. Needed for reference to know
-	 * if the block is stationary.
-	 */
-	private int tetrisBlockColumn;
 	/**
 	 * Tracks how many 'ticks' the Tetris block has been stationary. If it
 	 * reaches MAX_STATIONARY_ITERATIONS, a new Tetris block is spawned.
@@ -114,12 +103,12 @@ public class Tetris extends Application {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						// Used to know if the Tetris block has remained stationary
-						tetrisBlockRow = currentBlock.getTileA().getRow();
-						tetrisBlockColumn = currentBlock.getTileA().getColumn();
+						int tetrisBlockRow = currentBlock.getTileA().getRow();
+						int tetrisBlockColumn = currentBlock.getTileA().getColumn();
 						
 						topIterations = (currentBlock.isAtTopOfScreen()) ? topIterations + 1 : 0;
 						
-						if (topIterations == MAX_TOP_ITERATIONS) { // Tetris block has been at the top of the screen for too long
+						if (topIterations == MAX_TOP_ITERATIONS || gameOver) { // Tetris block has been at the top of the screen for too long
 							gameOver = true;
 							gui.display(mainStage, gameMesh, player, gameOver);	
 						}
@@ -150,14 +139,14 @@ public class Tetris extends Application {
 								player.changeRowsCleared(numRowsCleared);
 								player.changeScore(getPoints(numRowsCleared));
 								
-								if (!canSpawnBlock(currentBlock, gameMesh)) {
+								if (!canSpawnBlock(currentBlock, gameMesh))
 									gameOver = true;
-									return;
-								}
 								
-								gui.setOnKeyPress(currentBlock, gameMesh);
-								Controller.addTetrisBlock(currentBlock, gameMesh);
-								gui.display(mainStage, gameMesh, player, gameOver);	
+								else {
+									gui.setOnKeyPress(currentBlock, gameMesh);
+									Controller.addTetrisBlock(currentBlock, gameMesh);
+									gui.display(mainStage, gameMesh, player, gameOver);	
+								}
 							}
 						}
 					}
@@ -193,9 +182,9 @@ public class Tetris extends Application {
 	 */
 	private static boolean canSpawnBlock(TetrisBlock tetrisBlock, GameMesh gameMesh) {
 		Tile tileA = tetrisBlock.getTileA();
-		Tile tileB = tetrisBlock.getTileA();
-		Tile tileC = tetrisBlock.getTileA();
-		Tile tileD = tetrisBlock.getTileA();
+		Tile tileB = tetrisBlock.getTileB();
+		Tile tileC = tetrisBlock.getTileC();
+		Tile tileD = tetrisBlock.getTileD();
 		
 		try {
 			return (gameMesh.isEmpty(tileA.getRow(), tileA.getColumn()) && 
