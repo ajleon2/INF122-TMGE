@@ -20,31 +20,6 @@ public class TetrisBlock {
 		S, Z, L, J, O, I, T;
 	}
 	
-	/**
-	 * @param blockType The block type.
-	 * @return The block type's associated color.
-	 */
-	private static Color blockTypeToColor(BlockType blockType) {
-		switch(blockType) {
-		case J:
-			return Color.SLATEGRAY;
-		case L:
-			return Color.DARKGOLDENROD;
-		case O:
-			return Color.INDIANRED;
-		case S:
-			return Color.FORESTGREEN;
-		case T:
-			return Color.CADETBLUE;
-		case Z:
-			return Color.HOTPINK;
-		case I:
-			return Color.SANDYBROWN;
-		default:
-			return Color.DARKGRAY;
-		}
-	}	
-	
 	
 	// The 4 tiles that make up a Tetris block.
 	// *See documentation for tile mappings to each
@@ -95,12 +70,6 @@ public class TetrisBlock {
 		
 		this.blockType = blockType;
 		this.orientation = Orientation.DEFAULT;
-		
-		Color tileColor = blockTypeToColor(blockType);
-		this.tileA.setColorFill(tileColor);
-		this.tileB.setColorFill(tileColor);
-		this.tileC.setColorFill(tileColor);
-		this.tileD.setColorFill(tileColor);
 	}
 	
 	/**
@@ -549,11 +518,12 @@ public class TetrisBlock {
 	}
 	
 	/**
-	 * @return True if any of this Tetris block's tiles are at the
-	 * top of the screen, False if otherwise.
+	 * @param row A row on the game mesh.
+	 * @return True if any part of this Tetris block
+	 * is on the provided game mesh row; False if otherwise.
 	 */
-	public boolean isAtTopOfScreen() {
-		return (tileA.getRow() == 0 || tileB.getRow() == 0 
-				|| tileC.getRow() == 0 || tileD.getRow() == 0);
+	public boolean isOnRow(int row) {
+		return (tileA.getRow() == row || tileB.getRow() == row 
+				|| tileC.getRow() == row || tileD.getRow() == row);
 	}	
 }

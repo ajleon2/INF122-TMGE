@@ -71,28 +71,6 @@ public class Tile {
 	}
 	
 	/**
-	 * Create a new, dark gray Tile object. Tiles are squares. Assumes each
-	 * cell on the game board is equivalent to 1 tile.
-	 * @param tileLength Length of the Tile (in pixels).
-	 * @param row The row on the game mesh this tile will
-	 * reside in. Assumes 0 indexing.
-	 * @param column The column on the game mesh this tile
-	 * will reside in. Assumes 0 indexing.
-	 */
-	public Tile(int tileLength, int row, int column) {
-		this.row = row;
-		this.column = column;
-		this.tileLength = tileLength;
-		
-		this.tile = new Rectangle(tileLength, tileLength);
-		this.tile.setX(column*tileLength);
-		this.tile.setY(row*tileLength);
-		this.tile.setFill(Color.DARKGRAY);
-		
-		this.tileType = TileType.TETRIS;
-	}
-	
-	/**
 	 * @return The length (in pixels) of this tile.
 	 */
 	public int getLength() {

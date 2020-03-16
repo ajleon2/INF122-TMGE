@@ -9,11 +9,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * Manages the graphical user interface of the Tetris game.
+ * Manages displaying the graphical user interface to the player.
  * Displays the game on the left and the player's stats on the
- * right.
- * @author Andrew Leon
- *
+ * right. Also sets and disables key press events.
+ * @author Andrew Leons
  */
 public class GUI {
 	/**
@@ -26,38 +25,44 @@ public class GUI {
 	private int gameScreenHeight;
 	
 	/**
-	 * Contains the overall layout (game on left, stats on right)
+	 * Contains the overall layout (game on left, player stats on right).
 	 */
 	private Pane pane;
 	/**
-	 * The Tetris scene
+	 * The Dr. Mario scene
 	 */
 	private Scene scene;
+	/**
+	 * The game's title (e.g. "Dr. Mario").
+	 */
+	private String gameTitle;
 	
 	/**
 	 * @param gameScreenWidth Width of the game screen (in pixels).
 	 * @param gameScreenHeight Height of the game screen (in pixels).
+	 * @param gameTitle The game's title.
 	 */
-	public GUI(int gameScreenWidth, int gameScreenHeight) {
+	public GUI(int gameScreenWidth, int gameScreenHeight, String gameTitle) {
 		this.gameScreenWidth = gameScreenWidth;
 		this.gameScreenHeight = gameScreenHeight;
+		this.gameTitle = gameTitle;
 		
 		this.pane = new Pane();
 		
-		// Extra width for the player stats
+		// Extra width for the player's stats
 		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); 
 	}
 	
 	/**
-	 * Displays the tiles in the game mesh and the player stats to the screen.
-	 * If gameOver is True, will also display a game over message. If false, will not.
+	 * Displays the game mesh's tiles and the player's stats to the screen.
+	 * If gameOver is True, will also display a game over message; if false, will not.
 	 * @param stage The javafx stage to display to.
 	 * @param gameMesh The game mesh which represents all tiles on the game screen.
 	 * @param player Contains the player's name and stats.
 	 * @param gameOver If True, displays a game over message. If false, doesn't.
 	 */
 	public void display(Stage stage, GameMesh gameMesh, Player player, Boolean gameOver) {
-		this.pane.getChildren().clear();
+		this.pane.getChildren().clear(); // Reset the screen
 		
 		setPlayerStats(player);
 		setGameMesh(gameMesh);
@@ -66,7 +71,7 @@ public class GUI {
 			setGameOver();
 		
 		stage.setScene(this.scene);
-		stage.setTitle("T E T R I S");
+		stage.setTitle(this.gameTitle);
 		stage.show();
 	}
 	
@@ -84,7 +89,7 @@ public class GUI {
 	/**
 	 * Puts the game mesh to the screen.
 	 * @param gameMesh The game mesh, contains information about where
-	 * each tile is placed on the screen.
+	 * each tile is to be placed on the screen.
 	 */
 	private void setGameMesh(GameMesh gameMesh) {
 		for (int r = 0; r < gameMesh.getNumRows(); r++) {
@@ -96,8 +101,8 @@ public class GUI {
 	}
 	
 	/**
-	 * Puts the player's name and stats on the screen at the right side.
-	 * @param player Contains the player's current stats.
+	 * Puts the player's name and stats on the right side of the screen.
+	 * @param player Contains the player's name and stats.
 	 */
 	private void setPlayerStats(Player player) {
 		Line line = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
@@ -112,38 +117,59 @@ public class GUI {
 		scoreText.setX(this.gameScreenWidth + 5);
 		scoreText.setY(100);
 		
-		String linesCleared = String.format("Lines Cleared: %d", player.getRowsCleared());
-		Text linesClearedText = new Text(linesCleared);
-		linesClearedText.setX(this.gameScreenWidth + 5);
-		linesClearedText.setY(150);
+		String tileMatches = String.format("Tiles matched: %d", player.getNumTileMatches());
+		Text tileMatchesText = new Text(tileMatches);
+		tileMatchesText.setX(this.gameScreenWidth + 5);
+		tileMatchesText.setY(150);
 		
-		this.pane.getChildren().addAll(line, playerNameText, scoreText, linesClearedText);
+		this.pane.getChildren().addAll(line, playerNameText, scoreText, tileMatchesText);
 	}
 	
 	/**
-	 * Set the javafx Scene object to listen for key presses.
-	 * @param tetrisBlock The tetris block that should move or flip on key press.
+	 * Set the javafx Scene object to listen for key presses so the player can
+	 * move the provided Pill object.
+	 * @param pill The pill that should move or flip on key press.
 	 * @param gameMesh The game mesh containing the tile placement information.
 	 */
-	public void setOnKeyPress(TetrisBlock tetrisBlock, GameMesh gameMesh) {
+	public void setOnKeyPress(Pill pill, GameMesh gameMesh) {
 		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
 			
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case RIGHT:
-					Controller.moveRight(tetrisBlock, gameMesh);
+					Controller.moveRight(pill, gameMesh);
 					break;
 					
 				case DOWN:
-					Controller.moveDown(tetrisBlock, gameMesh);
+					Controller.moveDown(pill, gameMesh);
 					break;
 					
 				case LEFT:
-					Controller.moveLeft(tetrisBlock, gameMesh);
+					Controller.moveLeft(pill, gameMesh);
 					break;
 					
 				case UP:
-					Controller.flip(tetrisBlock, gameMesh);
+					Controller.flip(pill, gameMesh);
+					break;
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Remove the player's control over the given Pill object.
+	 * @param pill The pill object which the player should not be
+	 * able to control.
+	 */
+	public void disableOnKeyPress(Pill pill) {
+		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
+			
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case RIGHT:
+				case DOWN:
+				case LEFT:
+				case UP:
 					break;
 				}
 			}

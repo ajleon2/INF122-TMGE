@@ -106,7 +106,7 @@ public class Tetris extends Application {
 						int tetrisBlockRow = currentBlock.getTileA().getRow();
 						int tetrisBlockColumn = currentBlock.getTileA().getColumn();
 						
-						topIterations = (currentBlock.isAtTopOfScreen()) ? topIterations + 1 : 0;
+						topIterations = (currentBlock.isOnRow(0)) ? topIterations + 1 : 0;
 						
 						if (topIterations == MAX_TOP_ITERATIONS || gameOver) { // Tetris block has been at the top of the screen for too long
 							gameOver = true;

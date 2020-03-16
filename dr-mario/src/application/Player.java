@@ -2,7 +2,7 @@ package application;
 
 /**
  * Holds the player's name, score, and number of
- * rows cleared.
+ * tile matches.
  * @author Andrew Leon
  *
  */
@@ -17,14 +17,19 @@ public class Player {
 	 */
 	private int score;
 	/**
-	 * The number of rows this player has cleared.
+	 * The number of tile matches this player has achieved.
 	 */
-	private int rowsCleared;
+	private int numTileMatches;
 	
+	/**
+	 * Create a new player with a score of 0, tile matches of
+	 * 0, and the provided name.
+	 * @param name
+	 */
 	public Player(String name) {
 		this.name = name;
 		this.score = 0;
-		this.rowsCleared = 0;
+		this.numTileMatches = 0;
 	}
 	
 	/**
@@ -36,13 +41,13 @@ public class Player {
 	}
 	
 	/**
-	 * Change the count of how many rows this player has cleared
-	 * by the given amount.
-	 * @param theChange Added to the player's count of how many rows
-	 * they've cleared.
+	 * Change the count of how many tile matches this player has
+	 * achieved by the given amount.
+	 * @param theChange Added to the player's count of
+	 * tile matches they've achieved.
 	 */
-	public void changeRowsCleared(int theChange) {
-		this.rowsCleared += theChange;
+	public void changeTileMatches(int theChange) {
+		this.numTileMatches += theChange;
 	}
 	
 	/**
@@ -53,10 +58,11 @@ public class Player {
 	}
 	
 	/**
-	 * @return The number of rows this player has cleared.
+	 * @return The number of tile matches this player has
+	 * achieved.
 	 */
-	public int getRowsCleared() {
-		return this.rowsCleared;
+	public int getNumTileMatches() {
+		return this.numTileMatches;
 	}
 	
 	/**
