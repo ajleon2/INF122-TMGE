@@ -9,6 +9,22 @@ package application;
 public class Player {
 
 	/**
+	 * Determines whether a player is player1 or player2.
+	 * Used to determine the player's controls. 
+	 * @author Andrew Leon
+	 *
+	 */
+	public enum PlayerNumber {
+		PLAYER_1, PLAYER_2
+	}
+	
+	/**
+	 * Determines if this player uses player1's controls or
+	 * player2's controls.
+	 */
+	private PlayerNumber playerNumber;
+	
+	/**
 	 * This player's name.
 	 */
 	private String name;
@@ -26,10 +42,20 @@ public class Player {
 	 * 0, and the provided name.
 	 * @param name
 	 */
-	public Player(String name) {
+	public Player(String name, PlayerNumber playerNumber) {
 		this.name = name;
 		this.score = 0;
 		this.numTileMatches = 0;
+		this.playerNumber = playerNumber;
+	}
+	
+	/**
+	 * 
+	 * @return This player's player number. Used to determine
+	 * this player's control scheme.
+	 */
+	public PlayerNumber getPlayerNumber() {
+		return this.playerNumber;
 	}
 	
 	/**

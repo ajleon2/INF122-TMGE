@@ -42,15 +42,15 @@ public class GUI {
 	 * @param gameScreenHeight Height of the game screen (in pixels).
 	 * @param gameTitle The game's title.
 	 */
-	public GUI(int gameScreenWidth, int gameScreenHeight, String gameTitle) {
+	public GUI(Scene scene, Pane pane, int gameScreenWidth, int gameScreenHeight, String gameTitle) {
 		this.gameScreenWidth = gameScreenWidth;
 		this.gameScreenHeight = gameScreenHeight;
 		this.gameTitle = gameTitle;
 		
-		this.pane = new Pane();
+		this.pane = pane;
 		
 		// Extra width for the player's stats
-		this.scene = new Scene(this.pane, gameScreenWidth + 150, gameScreenHeight); 
+		this.scene = scene;
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class GUI {
 	 * @param player Contains the player's name and stats.
 	 * @param gameOver If True, displays a game over message. If false, doesn't.
 	 */
-	public void display(Stage stage, GameMesh gameMesh, Player player, Boolean gameOver) {
+	public void display(Stage stage, GameMesh gameMesh, Player player, boolean gameOver) {
 		this.pane.getChildren().clear(); // Reset the screen
 		
 		setPlayerStats(player);
@@ -105,7 +105,8 @@ public class GUI {
 	 * @param player Contains the player's name and stats.
 	 */
 	private void setPlayerStats(Player player) {
-		Line line = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
+		Line leftLine = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
+		Line rightLine = new Line(this.gameScreenWidth + 100, 0, this.gameScreenWidth + 100, this.gameScreenHeight);
 		
 		String playerName = String.format("Player: %s", player.getName());
 		Text playerNameText = new Text(playerName);
@@ -122,57 +123,6 @@ public class GUI {
 		tileMatchesText.setX(this.gameScreenWidth + 5);
 		tileMatchesText.setY(150);
 		
-		this.pane.getChildren().addAll(line, playerNameText, scoreText, tileMatchesText);
-	}
-	
-	/**
-	 * Set the javafx Scene object to listen for key presses so the player can
-	 * move the provided Pill object.
-	 * @param pill The pill that should move or flip on key press.
-	 * @param gameMesh The game mesh containing the tile placement information.
-	 */
-	public void setOnKeyPress(Pill pill, GameMesh gameMesh) {
-		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
-			
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case RIGHT:
-					Controller.moveRight(pill, gameMesh);
-					break;
-					
-				case DOWN:
-					Controller.moveDown(pill, gameMesh);
-					break;
-					
-				case LEFT:
-					Controller.moveLeft(pill, gameMesh);
-					break;
-					
-				case UP:
-					Controller.flip(pill, gameMesh);
-					break;
-				}
-			}
-		});
-	}
-	
-	/**
-	 * Remove the player's control over the given Pill object.
-	 * @param pill The pill object which the player should not be
-	 * able to control.
-	 */
-	public void disableOnKeyPress(Pill pill) {
-		this.scene.setOnKeyPressed((EventHandler<? super KeyEvent>) new EventHandler<KeyEvent>() {
-			
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case RIGHT:
-				case DOWN:
-				case LEFT:
-				case UP:
-					break;
-				}
-			}
-		});
+		this.pane.getChildren().addAll(leftLine, rightLine, playerNameText, scoreText, tileMatchesText);
 	}
 }

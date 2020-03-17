@@ -22,6 +22,11 @@ public class GameLogic {
 		return numVirusesKilled * 100;
 	}
 	
+	/**
+	 * @param gameMesh The game mesh.
+	 * @return True if the given game mesh is devoid of viruses;
+	 * False if otherwise.
+	 */
 	public static boolean allVirusesKilled(GameMesh gameMesh) {
 		for (int row = 0; row < gameMesh.getNumRows(); row++) {
 			for (int col = 0; col < gameMesh.getNumColumns(); col++) {
@@ -30,7 +35,6 @@ public class GameLogic {
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -154,10 +158,6 @@ public class GameLogic {
 	 */
 	private static boolean[][] markMatching(GameMesh gameMesh, boolean[][] tilesToDelete, Tile centerTile, int minMatching) {
 		boolean[][] result;
-		
-		if (centerTile == null) {
-			System.out.println("Oops");
-		}
 		
 		// Check for matches horizontally about the center tile
 		// If the number of horizontal matches >= numMatching, mark those spots as matching
@@ -290,7 +290,13 @@ public class GameLogic {
 		EASY, MEDIUM, HARD
 	}
 	
-	
+	/**
+	 * Adds the initial viruses to the provided game mesh. How many
+	 * viruses spawn is determined by the provided difficulty level.
+	 * @param gameMesh The game mesh.
+	 * @param difficulty The difficulty level.
+	 * @param tileLength The length of a tile (in pixels).
+	 */
 	public static void spawnViruses(GameMesh gameMesh, Difficulty difficulty, int tileLength) {
 		int probability = 0;
 		if (difficulty == Difficulty.EASY) 
