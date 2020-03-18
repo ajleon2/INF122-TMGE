@@ -23,6 +23,10 @@ public class GUI {
 	 * The height of the game screen (in pixels).
 	 */
 	private int gameScreenHeight;
+	/**
+	 * The width of the stats screen (in pixels).
+	 */
+	private int statsScreenWidth;
 	
 	/**
 	 * Contains the overall layout (game on left, player stats on right).
@@ -42,9 +46,10 @@ public class GUI {
 	 * @param gameScreenHeight Height of the game screen (in pixels).
 	 * @param gameTitle The game's title.
 	 */
-	public GUI(Scene scene, Pane pane, int gameScreenWidth, int gameScreenHeight, String gameTitle) {
+	public GUI(Scene scene, Pane pane, int gameScreenWidth, int gameScreenHeight, int statsScreenWidth, String gameTitle) {
 		this.gameScreenWidth = gameScreenWidth;
 		this.gameScreenHeight = gameScreenHeight;
+		this.statsScreenWidth = statsScreenWidth;
 		this.gameTitle = gameTitle;
 		
 		this.pane = pane;
@@ -101,12 +106,20 @@ public class GUI {
 	}
 	
 	/**
+	 * @return The full width of this player's side of the
+	 * screen (in pixels).
+	 */
+	private int getFullScreenWidth() {
+		return gameScreenWidth + statsScreenWidth;
+	}
+	
+	/**
 	 * Puts the player's name and stats on the right side of the screen.
 	 * @param player Contains the player's name and stats.
 	 */
 	private void setPlayerStats(Player player) {
 		Line leftLine = new Line(this.gameScreenWidth, 0, this.gameScreenWidth, this.gameScreenHeight);
-		Line rightLine = new Line(this.gameScreenWidth + 100, 0, this.gameScreenWidth + 100, this.gameScreenHeight);
+		Line rightLine = new Line(getFullScreenWidth(), 0, getFullScreenWidth(), this.gameScreenHeight);
 		
 		String playerName = String.format("Player: %s", player.getName());
 		Text playerNameText = new Text(playerName);

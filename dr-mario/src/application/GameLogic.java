@@ -18,8 +18,15 @@ public class GameLogic {
 	 * @param numVirusesKilled The number of viruses killed.
 	 * @return The corresponding points earned.
 	 */
-	public static int getPoints(int numVirusesKilled) {
-		return numVirusesKilled * 100;
+	public static int getPoints(int numVirusesKilled, Difficulty difficulty) {
+		double difficultyMultiplier = 1;
+		
+		if (difficulty == Difficulty.EASY)
+			difficultyMultiplier = 0.8;
+		if (difficulty == Difficulty.HARD)
+			difficultyMultiplier = 1.2;
+		
+		return (int)(numVirusesKilled * difficultyMultiplier * 100);
 	}
 	
 	/**
